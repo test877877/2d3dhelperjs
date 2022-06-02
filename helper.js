@@ -13,8 +13,8 @@
         MatterJS: () => window["Matter"]
     };
 
-    function TwoDimensionEngine() {
-        if(!libraries.MatterJS) loadScript("");
+    async function TwoDimensionEngine() {
+        if (!libraries.MatterJS) await loadScript("https://unpkg.com/matter-js");
         return {
             Vector2: null,
             Entity: null,
@@ -24,7 +24,8 @@
         };
     }
 
-    function ThreeDimensionEngine() {
+    async function ThreeDimensionEngine() {
+        if (!libraries.AmmoJS) await loadScript("https://raw.githubusercontent.com/kripken/ammo.js/main/builds/ammo.wasm.js");
         return {
             Vector2: null,
             Vector3: null,
