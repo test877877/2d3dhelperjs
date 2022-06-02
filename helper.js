@@ -5,16 +5,18 @@
         element.setAttribute("type", "text/javascript");
         element.setAttribute("async", async.toString());
         document.body.appendChild(element);
-        element.addEventListener("load", r);
-        element.addEventListener("error", ev => r(ev));
+        element.addEventListener("load", () => r({success: true}));
+        element.addEventListener("error", ev => r({error: ev}));
     });
-    const libraries = {
-        AmmoJS: () => window["Ammo"],
-        MatterJS: () => window["Matter"]
-    };
+    const loadImage = src => new Promise(r => {
+        const image = new Image(src);
+        image.onload = () => r(true);
+        image.onerror = () => r(false);
+    });
+    const libraries = {AmmoJS: () => window["Ammo"], MatterJS: () => window["Matter"]};
 
     async function TwoDimensionEngine() {
-        if (!libraries.MatterJS) await loadScript("https://unpkg.com/matter-js");
+        if (!libraries.MatterJS()) await loadScript("https://unpkg.com/matter-js");
         return {
             Vector2: null,
             Entity: null,
@@ -25,7 +27,7 @@
     }
 
     async function ThreeDimensionEngine() {
-        if (!libraries.AmmoJS) await loadScript("https://raw.githubusercontent.com/kripken/ammo.js/main/builds/ammo.wasm.js");
+        if (!libraries.AmmoJS()) await loadScript("https://raw.githubusercontent.com/kripken/ammo.js/main/builds/ammo.wasm.js");
         return {
             Vector2: null,
             Vector3: null,
