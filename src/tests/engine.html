@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Engine Test</title>
+</head>
+<body></body>
+<script src="https://unpkg.com/matter-js/build/matter.min.js"></script>
+<script src="https://raw.githubusercontent.com/kripken/ammo.js/main/builds/ammo.wasm.js"></script>
+<script src="https://unpkg.com/three/build/three.min.js"></script>
+<script src="../scripts/engine.js"></script>
+<script>
+    (async () => {
+        await ENGINE.init;
+
+        const twoD = await ENGINE.TwoDimensionEngine({
+            loadPhysics: true
+        });
+        const threeD = await ENGINE.ThreeDimensionEngine({
+            loadPhysics: true
+        });
+
+        const twoDScene = new twoD.Scene();
+
+        const twoDCanvas = twoDScene.canvas;
+
+        twoDCanvas.width = window.innerWidth;
+        twoDCanvas.height = window.innerHeight;
+        // noinspection JSValidateTypes
+        twoDCanvas.style = `position: absolute; top: 0; left: 0;`;
+
+        const circle = new twoD.RigidBody.circle(twoDCanvas.width / 2, 70, 5, {
+            render: {
+                fillStyle: "black"
+            }
+        });
+
+        const myRope = new twoD.RigidBody.rope({
+            bodyA: circle.body,
+            pointB: Matter.Vector.clone(circle.body.position),
+            stiffness: .006,
+            length: 30,
+            render: {
+                strokeStyle: "red"
+            }
+        });
+        window.circle = circle;
+        //circle.body.position.x += 10;
+        circle.setPosition(twoDCanvas.width / 2, 10);
+
+        const myGround = new twoD.RigidBody.rectangle(twoDCanvas.width / 2, twoDCanvas.height - 25, twoDCanvas.width, 50, {
+            isStatic: true,
+            render: {
+                fillStyle: "red"
+            }
+        });
+
+        twoDScene.add(circle, myRope, twoDScene.mouseConstraint, myGround);
+    })();
+</script>
+</html>
