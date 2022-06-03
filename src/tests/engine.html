@@ -39,14 +39,12 @@
             bodyA: circle.body,
             pointB: Matter.Vector.clone(circle.body.position),
             stiffness: .006,
-            length: 30,
+            length: 100,
             render: {
                 strokeStyle: "red"
             }
         });
         window.circle = circle;
-        //circle.body.position.x += 10;
-        circle.setPosition(twoDCanvas.width / 2, 10);
 
         const myGround = new twoD.RigidBody.rectangle(twoDCanvas.width / 2, twoDCanvas.height - 25, twoDCanvas.width, 50, {
             isStatic: true,
