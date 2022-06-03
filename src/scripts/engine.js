@@ -519,6 +519,7 @@
                 Engine, Render, Runner, Bodies, Composite, Constraint, MouseConstraint, Mouse,
                 Body, Vector, Composites
             } = Matter;
+            this.tickListeners = [];
             const physicsEngine = Engine.create();
             const mouse = Mouse.create(canvas), mouseConstraint = MouseConstraint.create(physicsEngine, {
                 mouse,
@@ -540,6 +541,11 @@
             Render.run(renderer);
             const physicsRunner = Runner.create();
             Runner.run(physicsRunner, physicsEngine);
+            const _rW = Render.world;
+            Render.world = (...args) => {
+                _rW(...args);
+                this.tickListeners.forEach(i => i());
+            }
 
             this.add = (...bodies) => {
                 Composite.add(physicsEngine.world, bodies.map(i => i.body));
